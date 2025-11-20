@@ -1,0 +1,37 @@
+/* ────────────── Quill Focus Fix for Neomorphic Layout ────────────── */
+.quill-wrapper {
+  position: relative !important;
+  z-index: 999 !important;
+  overflow: visible !important;
+  isolation: isolate !important;
+}
+
+.ql-toolbar {
+  position: sticky;
+  top: 0;
+  background: var(--card-bg);
+  z-index: 1000 !important;
+  border-radius: 0.75rem 0.75rem 0 0;
+}
+
+.ql-container {
+  background: var(--bg);
+  color: var(--text);
+  border-radius: 0 0 0.75rem 0.75rem;
+  overflow: visible !important;
+  min-height: 250px;
+}
+
+.ql-editor {
+  color: var(--text);
+  min-height: 250px;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* 🩵 کلیدی‌ترین خط برای جلوگیری از ناپدید شدن Toolbar */
+.admin-section {
+  overflow: visible !important;
+  position: static !important;
+  z-index: auto !important;
+}

@@ -1,0 +1,191 @@
+// backend/controllers/adminPoliciesController.js
+import pool from "../db.js";
+import ExcelJS from "exceljs";
+import PDFDocument from "pdfkit";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+/* ───────────── 📋 لیست تمام سیاست‌ها (Policies) ───────────── */
+export async function listPolicies(req, res) {
+  try {
+    const result = await pool.query(`
+      SELECT id, policy_type, language, version, content, created_at
+      FROM policies
+      ORDER BY created_at DESC;
+    `);
+    res.json(result.rows);
+  } catch (err) {
+    console.error("❌ listPolicies error:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+}
+
+/* ───────────── 📤 خروجی Excel ───────────── */
+export async function exportPoliciesXLSX(req, res) {
+  try {
+    const result = await pool.query(`
+      SELECT policy_type, language, version, created_at
+      FROM policies
+      ORDER BY created_at DESC;
+    `);
+
+    const workbook = new ExcelJS.Workbook();
+    const sheet = workbook.addWorksheet("Policies");
+
+    // 🎨 تنظیم ستون‌ها
+    sheet.columns = [
+      { header: "Policy Type", key: "policy_type", width: 20 },
+      { header: "Language", key: "language", width: 15 },
+      { header: "Version", key: "version", width: 10 },
+      { header: "Created At", key: "created_at", width: 25 },
+    ];
+
+    // 🎨 استایل هدر
+    const headerRow = sheet.getRow(1);
+    headerRow.eachCell((cell) => {
+      cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
+      cell.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FF0A1A44" },
+      };
+      cell.alignment = { horizontal: "center", vertical: "middle" };
+      cell.border = {
+        top: { style: "thin", color: { argb: "FF00BFA6" } },
+        bottom: { style: "thin", color: { argb: "FF00BFA6" } },
+      };
+    });
+
+    result.rows.forEach((r) => sheet.addRow(r));
+
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=IranConnect_Policies_Report.xlsx"
+    );
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+
+    await workbook.xlsx.write(res);
+    res.end();
+  } catch (err) {
+    console.error("❌ exportPoliciesXLSX error:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+}
+
+/* ───────────── 🧾 خروجی PDF ───────────── */
+export async function exportPoliciesPDF(req, res) {
+  try {
+    const result = await pool.query(`
+      SELECT policy_type, language, version, created_at
+      FROM policies
+      ORDER BY created_at DESC;
+    `);
+
+    const doc = new PDFDocument({ margin: 50, size: "A4" });
+
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=IranConnect_Policies_Report.pdf"
+    );
+    res.setHeader("Content-Type", "application/pdf");
+    doc.pipe(res);
+
+    const logoPath = path.join(__dirname, "../../frontend/public/logo-light.png");
+    const pageWidth = doc.page.width;
+    let yPos = 50;
+
+    // ✅ لوگو در مرکز بالا
+    if (fs.existsSync(logoPath)) {
+      const logoWidth = 90;
+      const logoHeight = 90;
+      const logoX = (pageWidth - logoWidth) / 2;
+      doc.image(logoPath, logoX, yPos, { width: logoWidth });
+      yPos += logoHeight + 10;
+      doc.moveDown(6);
+    }
+
+    // ✅ عنوان و تاریخ
+    doc
+      .fontSize(12)
+      .fillColor("#0a1a44")
+      .text("Policies Report", { align: "center" });
+
+    const now = new Date();
+    const formattedDate = now.toLocaleString();
+    doc
+      .moveUp(1)
+      .moveDown(1)
+      .fontSize(10)
+      .fillColor("#666666")
+      .text(`Generated on: ${formattedDate}`, { align: "center" });
+
+    doc.moveDown(0.5);
+
+    // جدول
+    const startY = doc.y + 5;
+    const headers = ["Policy Type", "Language", "Version", "Created At"];
+    const colWidths = [140, 100, 80, 140];
+
+    // 🟦 هدر جدول
+    doc
+      .fontSize(8)
+      .fillColor("#FFFFFF")
+      .rect(40, startY, 515, 22)
+      .fill("#0a1a44")
+      .fillColor("#FFFFFF");
+
+    let x = 45;
+    headers.forEach((h, i) => {
+      doc.text(h, x, startY + 6, { width: colWidths[i], align: "left" });
+      x += colWidths[i];
+    });
+
+    // 🧾 داده‌ها
+    let y = startY + 22;
+    result.rows.forEach((r, idx) => {
+      const isEven = idx % 2 === 0;
+      const bgColor = isEven ? "#f7f9fb" : "#ffffff";
+
+      doc.fillColor(bgColor).rect(40, y, 515, 22).fill();
+      doc.fillColor("#000000").fontSize(8);
+
+      const row = [
+        r.policy_type || "—",
+        r.language || "—",
+        r.version || "—",
+        r.created_at ? new Date(r.created_at).toLocaleString() : "—",
+      ];
+
+      let cellX = 45;
+      row.forEach((cell, i) => {
+        doc.text(cell, cellX, y + 6, { width: colWidths[i], align: "left" });
+        cellX += colWidths[i];
+      });
+
+      y += 22;
+      doc
+        .moveTo(40, y)
+        .lineTo(555, y)
+        .strokeColor("#00bfa6")
+        .lineWidth(0.3)
+        .stroke();
+
+      // صفحه جدید در صورت پر شدن
+      if (y > 750) {
+        doc.addPage();
+        y = 60;
+      }
+    });
+
+    doc.end();
+  } catch (err) {
+    console.error("❌ exportPoliciesPDF error:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+}

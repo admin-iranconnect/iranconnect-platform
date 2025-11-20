@@ -1,0 +1,177 @@
+/*frontend/styles/admin.css*/
+/* ────────────────────────────────
+   🎨 IranConnect Admin UI Framework
+   Style System for all admin pages
+   ──────────────────────────────── */
+
+/* 🩶 Layout Container */
+.admin-container {
+  padding: 1.5rem 1.5rem 3rem;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* 🩶 Section Box (main card container) */
+.admin-section {
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text);
+  border-radius: 1rem;
+  box-shadow: 5px 5px 15px var(--shadow-dark),
+              -5px -5px 15px var(--shadow-light);
+  padding: 1.25rem 1.25rem 1.5rem;
+  transition: all 0.25s ease;
+}
+.admin-section:hover {
+  box-shadow: 3px 3px 10px var(--shadow-dark),
+              -3px -3px 10px var(--shadow-light);
+}
+
+/* 🩵 Titles */
+.admin-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* 🩵 Muted text / helper text */
+.admin-muted {
+  color: var(--text);
+  opacity: 0.7;
+}
+
+/* 🩵 Input Fields */
+.admin-input {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  transition: all 0.2s ease;
+}
+.admin-input:focus {
+  outline: none;
+  border-color: var(--turquoise);
+  box-shadow: 0 0 0 2px var(--turquoise, #00bfa6);
+}
+
+/* 🩵 Buttons */
+.admin-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+.admin-btn-primary {
+  background: var(--turquoise);
+  color: var(--navy);
+  padding: 0.5rem 2rem;
+  box-shadow: 4px 4px 10px #b8e0dd, -4px -4px 10px #ffffff;
+}
+.admin-btn-primary:hover {
+  background: rgba(64, 224, 208, 0.9);
+}
+.admin-btn-secondary {
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: 0.5rem 1rem;
+}
+.admin-btn-secondary:hover {
+  opacity: 0.85;
+}
+
+/* 🩵 Tables */
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  color: var(--text);
+}
+.admin-table th,
+.admin-table td {
+  padding: 0.75rem;
+  text-align: left;
+}
+.admin-table thead {
+  opacity: 0.85;
+}
+.admin-table tbody tr {
+  border-top: 1px solid var(--border);
+  transition: background 0.2s ease;
+}
+.admin-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* 🩵 Cards & Shadows */
+.admin-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 1rem;
+  box-shadow: 5px 5px 15px var(--shadow-dark),
+              -5px -5px 15px var(--shadow-light);
+  transition: all 0.25s ease;
+}
+.admin-card:hover {
+  box-shadow: 3px 3px 10px var(--shadow-dark),
+              -3px -3px 10px var(--shadow-light);
+}
+
+/* 🩵 Utility classes */
+.text-turquoise {
+  color: var(--turquoise);
+}
+.bg-turquoise {
+  background: var(--turquoise);
+}
+.text-navy {
+  color: var(--navy);
+}
+
+/* 🩵 Responsive tweaks */
+@media (max-width: 768px) {
+  .admin-container {
+    padding: 1rem;
+  }
+  .admin-section {
+    padding: 1rem;
+  }
+  .admin-title {
+    font-size: 1rem;
+  }
+}
+/* ✅ رفع باگ عدم امکان تایپ در ReactQuill داخل card با shadow یا sticky */
+.quill-wrapper {
+  isolation: isolate;
+  overflow: visible !important;
+  position: relative;
+  z-index: 30;
+}
+
+.ql-container {
+  overflow: visible !important;
+}
+
+.ql-editor {
+  min-height: 250px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg);
+  border-radius: 0 0 0.5rem 0.5rem;
+}
+
+.ql-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: var(--card-bg);
+  border-radius: 0.5rem 0.5rem 0 0;
+}
