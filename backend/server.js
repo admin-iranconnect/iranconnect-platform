@@ -74,14 +74,28 @@ app.use(globalLimiter);
 /* ========================================================
    🌐 CORS
    ======================================================== */
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://iranconnect.org",
+  "https://www.iranconnect.org",
+  process.env.FRONTEND_URL,   // اگر خواستی از env هم بخونه
+].filter(Boolean);
+
 app.use(
   cors({
-    origin: ["http://localhost:3000", process.env.FRONTEND_URL].filter(Boolean),
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS: " + origin));
+      }
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
 
 /* Uploads directory CORS */
 app.use("/uploads", (req, res, next) => {
