@@ -67,6 +67,8 @@ console.log("📦 NODE_ENV =", process.env.NODE_ENV || "undefined");
    ======================================================== */
 const app = express();
 
+app.set("trust proxy", 1);
+
 app.use(globalLimiter);
 
 /* ========================================================
