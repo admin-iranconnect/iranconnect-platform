@@ -74,17 +74,19 @@ app.use(globalLimiter);
 /* ========================================================
    🌐 CORS
    ======================================================== */
-cors({
-  origin: [
-    "http://localhost:3000",
-    "https://iranconnect.org",
-    "https://www.iranconnect.org",
-    process.env.FRONTEND_URL
-  ].filter(Boolean),
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-});
+app.use(
+  cors({
+    origin: [
+      "http://localhost:3000",
+      "https://iranconnect.org",
+      "https://www.iranconnect.org",
+      "https://iranconnect-platform.vercel.app"
+    ],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
 
 
