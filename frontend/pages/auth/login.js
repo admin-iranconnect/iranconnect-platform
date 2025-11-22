@@ -70,7 +70,7 @@ export default function Login() {
       }
 
       // 🔒 با withCredentials فعال در apiClient، کوکی HttpOnly به‌صورت خودکار تنظیم می‌شود
-      const res = await apiClient.post(`api/auth/login`, payload, {
+      const res = await apiClient.post(`/auth/login`, payload, {
         withCredentials: true,
       });
 
