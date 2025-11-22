@@ -46,7 +46,7 @@ export default function AdminSuspiciousIPsPage() {
         pageSize: 10, // همیشه ۱۰ رکورد در هر صفحه
       };
 
-      const res = await apiClient.get("/api/admin/suspicious-ips", { params });
+      const res = await apiClient.get("/admin/suspicious-ips", { params });
 
       setIps(res.data?.data || []);
       setPagination(
@@ -69,7 +69,7 @@ export default function AdminSuspiciousIPsPage() {
     const token = localStorage.getItem("iran_token");
     const base = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:5000";
     window.open(
-      `${base}/api/admin/suspicious-ips/export/${format}?token=${token}`,
+      `${process.env.NEXT_PUBLIC_API_BASE}/admin/suspicious-ips/export/${format}?token=${token}`,
       "_blank"
     );
   }
