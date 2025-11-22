@@ -100,6 +100,8 @@ app.use("/uploads", (req, res, next) => {
 app.use("/cdn", cdnRouter);
 app.use("/uploads", express.static(path.resolve("uploads")));
 
+app.use(cookieParser());
+
 /* ========================================================
    🔒 Security middleware
    ======================================================== */
