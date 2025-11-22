@@ -87,7 +87,7 @@ export default function ChangePasswordPage() {
 
     setLoading(true);
     try {
-      const res = await apiClient.post("/api/auth/change-password", {
+      const res = await apiClient.post("/auth/change-password", {
         currentPassword,
         newPassword,
         captchaAnswer,
