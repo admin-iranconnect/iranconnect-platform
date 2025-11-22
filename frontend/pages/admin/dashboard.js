@@ -1,3 +1,4 @@
+/*frontend/pages/admin/dashboard.js*/
 import { useEffect, useMemo, useState } from "react";
 import apiClient from "../../utils/apiClient"; // ✅ نسخه توکن‌دار axios
 import AdminLayout from "../../components/admin/AdminLayout";
