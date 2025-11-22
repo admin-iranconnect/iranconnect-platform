@@ -6,7 +6,7 @@ const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:5000";
 
 // یک نمونه اختصاصی axios می‌سازیم
 const apiClient = axios.create({
-  baseURL: `${API_BASE},
+  baseURL: `${API_BASE}/api`,
   withCredentials: true,
 });
 
