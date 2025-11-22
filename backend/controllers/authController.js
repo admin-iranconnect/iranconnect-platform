@@ -16,21 +16,14 @@ import {
   handleSuccessfulLogin,
 } from "../middleware/accountLockout.js";
 import { monitorSuspiciousIP } from "../utils/suspiciousDetector.js";
+import { getSafeCookieOptions } from "../utils/cookieOptions.js";
+
 
 
 const BCRYPT_ROUNDS = parseInt(process.env.BCRYPT_ROUNDS || "12", 10);
 
 dotenv.config();
 
-function getCookieOptions() {
-  return {
-    httpOnly: true,
-    secure: true,
-    sameSite: "strict",
-    domain: ".iranconnect.org",
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-  };
-}
 
 /* ================================
    📩 پیکربندی nodemailer
@@ -309,14 +302,7 @@ export async function verify(req, res) {
       { expiresIn: "7d", algorithm: "HS512" }
     );
 
-    const opts = getCookieOptions(req);
-    res.cookie("access_token", token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "strict",
-      domain: ".iranconnect.org", // همین باعث میشه توی frontend هم دیده بشه
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 روز
-    });
+    res.cookie("access_token", token, getSafeCookieOptions(req));
 
     
     res.json({
@@ -549,14 +535,7 @@ export async function login(req, res) {
       { expiresIn: "7d", algorithm: "HS512" }
     );
 
-    const opts = getCookieOptions(req);
-    res.cookie("access_token", token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "strict",
-      domain: ".iranconnect.org", // همین باعث میشه توی frontend هم دیده بشه
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 روز
-    });
+    res.cookie("access_token", token, getSafeCookieOptions(req));
 
     // ✅ ثبت لاگ ورود موفق و ریست شمارنده‌ها
     await handleSuccessfulLogin(user, req);
