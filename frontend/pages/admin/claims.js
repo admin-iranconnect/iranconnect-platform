@@ -32,7 +32,7 @@ export default function AdminClaimsPage() {
   async function fetchClaims() {
     setLoading(true);
     try {
-      const res = await apiClient.get(`/api/admin/claims`, {
+      const res = await apiClient.get(`/admin/claims`, {
         params: statusFilter ? { status: statusFilter } : {},
       });
       setClaims(res.data || []);
@@ -69,7 +69,7 @@ export default function AdminClaimsPage() {
     if (!confirm("Confirm approval?")) return;
 
     try {
-      await apiClient.post(`/api/admin/claims/${id}/approve`, { note });
+      await apiClient.post(`/admin/claims/${id}/approve`, { note });
       fetchClaims();
       setSelectedClaim(null);
     } catch (err) {
@@ -81,7 +81,7 @@ export default function AdminClaimsPage() {
   // ❌ رد درخواست
   async function handleReject(id, note = "") {
     try {
-      await apiClient.post(`/api/admin/claims/${id}/reject`, { note });
+      await apiClient.post(`/admin/claims/${id}/reject`, { note });
       fetchClaims();
       setSelectedClaim(null);
     } catch (err) {
@@ -93,7 +93,7 @@ export default function AdminClaimsPage() {
   // 📤 خروجی XLSX
   async function handleExportXLSX() {
     try {
-      const res = await apiClient.get(`/api/admin/claims/export/xlsx`, {
+      const res = await apiClient.get(`/admin/claims/export/xlsx`, {
         responseType: "blob",
       });
       const blob = new Blob([res.data]);
@@ -112,7 +112,7 @@ export default function AdminClaimsPage() {
   // 📄 خروجی PDF
   async function handleExportPDF() {
     try {
-      const res = await apiClient.get(`/api/admin/claims/export/pdf`, {
+      const res = await apiClient.get(`/admin/claims/export/pdf`, {
         responseType: "blob",
       });
       const blob = new Blob([res.data]);
