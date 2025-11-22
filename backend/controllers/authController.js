@@ -27,10 +27,11 @@ function getCookieOptions(req) {
 
   return {
     httpOnly: true,
-    secure: isProd,          // 🔥 در پروداکشن باید انکریپت باشد
-    sameSite: isProd ? "None" : "Lax",
-    domain: isProd ? ".iranconnect.org" : undefined, // 🔥 اجازه بدهد بین دامنه‌ها معتبر باشد
+    secure: isProd,                      // باید در پروداکشن true باشد
+    sameSite: "None",                    // چون فرانت و بک‌اند روی دو ساب‌دامینند
+    domain: isProd ? ".iranconnect.org" : "localhost",
     path: "/",
+    maxAge: 7 * 24 * 60 * 60 * 1000      // 7 روز
   };
 }
 
