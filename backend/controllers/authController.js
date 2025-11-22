@@ -27,14 +27,13 @@ function getCookieOptions(req) {
 
   return {
     httpOnly: true,
-    secure: isProd,                      // باید در پروداکشن true باشد
-    sameSite: "None",                    // چون فرانت و بک‌اند روی دو ساب‌دامینند
-    domain: isProd ? ".iranconnect.org" : "localhost",
+    secure: isProd,
+    sameSite: isProd ? "None" : "Lax",
+    domain: undefined,  // ← این مهم‌ترین تغییر است
     path: "/",
-    maxAge: 7 * 24 * 60 * 60 * 1000      // 7 روز
+    maxAge: 7 * 24 * 60 * 60 * 1000
   };
 }
-
 
 /* ================================
    📩 پیکربندی nodemailer
