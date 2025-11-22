@@ -31,7 +31,7 @@ export default function PolicyUpdatePage() {
     setError("");
 
     try {
-      const res = await apiClient.post(`/api/admin/send-policy-update`, { lang });
+      const res = await apiClient.post(`/admin/send-policy-update`, { lang });
       setMsg(res.data.message || "✅ Policy update emails sent successfully!");
     } catch (err) {
       console.error("❌ Error sending emails:", err);
