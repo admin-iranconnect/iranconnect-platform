@@ -48,7 +48,6 @@ export default function App({ Component, pageProps }) {
   /* 🔐 Detect login via iran_token (مثل Header.jsx) */
   useEffect(() => {
     const checkLogin = () => {
-      const token = localStorage.getItem('iran_token');
       const valid =
         token &&
         token !== 'undefined' &&
@@ -111,7 +110,6 @@ export default function App({ Component, pageProps }) {
     try {
       clearTimeout(timerRef.current);
       setInactive(false);
-      const token = localStorage.getItem('iran_token');
       if (token) {
         await axios.post(
           `${process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:5000'}/api/auth/logout`,
