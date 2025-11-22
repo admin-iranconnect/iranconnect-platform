@@ -80,7 +80,8 @@ app.use(
       "http://localhost:3000",
       "https://iranconnect.org",
       "https://www.iranconnect.org",
-      "https://iranconnect-platform.vercel.app"
+      "https://iranconnect-platform.vercel.app",
+      "https://api.iranconnect.org"
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
