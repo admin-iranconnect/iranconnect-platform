@@ -2,7 +2,8 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://api.iranconnect.org/:path*"
+      "destination": "https://api.iranconnect.org/api/:path*"
     }
   ]
 }
+
