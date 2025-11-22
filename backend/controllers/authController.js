@@ -25,14 +25,13 @@ dotenv.config();
 function getCookieOptions(req) {
   const isProd = process.env.NODE_ENV === "production";
 
-  return {
+  res.cookie("access_token", token, {
     httpOnly: true,
-    secure: isProd,
-    sameSite: isProd ? "None" : "Lax",
-    domain: undefined,  // ← این مهم‌ترین تغییر است
-    path: "/",
-    maxAge: 7 * 24 * 60 * 60 * 1000
-  };
+    secure: true,
+    sameSite: "strict",
+    domain: ".iranconnect.org",   // 🔥 این خط را اضافه کن
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  });
 }
 
 /* ================================
