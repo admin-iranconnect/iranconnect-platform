@@ -39,7 +39,7 @@ export default function AdminBlockedIPs() {
         pageSize: 10,
       };
 
-      const res = await apiClient.get("/api/admin/blocked-ips", { params });
+      const res = await apiClient.get("/admin/blocked-ips", { params });
 
       setList(res.data?.data || []);
       setPagination(
@@ -62,7 +62,7 @@ export default function AdminBlockedIPs() {
   function handleExport(format) {
     const token = localStorage.getItem("iran_token");
     window.open(
-      `${base}/api/admin/blocked-ips/export/${format}?token=${token}`,
+      `${process.env.NEXT_PUBLIC_API_BASE}/api/admin/blocked-ips/export/${format}`,
       "_blank"
     );
   }
