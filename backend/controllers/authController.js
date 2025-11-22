@@ -27,6 +27,7 @@ function getCookieOptions() {
     httpOnly: true,
     secure: true,
     sameSite: "strict",
+    domain: ".iranconnect.org",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   };
 }
