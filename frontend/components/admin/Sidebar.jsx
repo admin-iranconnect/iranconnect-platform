@@ -1,7 +1,9 @@
 // frontend/components/admin/Sidebar.jsx
+
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
+import apiClient from "../../utils/apiClient";
 
 const groupedNav = [
   {
@@ -55,7 +57,6 @@ const groupedNav = [
       },
     ],
   },
-
   {
     label: "Settings",
     icon: "⚙️",
@@ -67,50 +68,52 @@ export default function Sidebar() {
   const { pathname } = useRouter();
   const [theme, setTheme] = useState("light");
   const [openGroup, setOpenGroup] = useState(null);
+  const [openSubGroup, setOpenSubGroup] = useState(null);
 
-  // 🔥 تعداد آی‌پی‌های مشکوک با وضعیت NOT BLOCKED
   const [unblockedCount, setUnblockedCount] = useState(0);
   const [hasSuspiciousIPs, setHasSuspiciousIPs] = useState(false);
 
-  const [openSubGroup, setOpenSubGroup] = useState(null);
-
-  /* ===========================
-     🔎 دریافت تعداد آی‌پی‌های NOT BLOCKED
-     =========================== */
+  /* --------------------------------------------------------
+     🔍 Fetch suspicious IP count using HttpOnly session
+  ---------------------------------------------------------*/
   useEffect(() => {
     fetchSuspiciousCount();
   }, []);
 
   async function fetchSuspiciousCount() {
     try {
-      const token = localStorage.getItem("iran_token");
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE || "http://localhost:5000"}/api/admin/suspicious-ips/count-unblocked`,
-        {
-          headers: { Authorization: `Bearer ${token}` }
-        }
+      const res = await apiClient.get(
+        "/admin/suspicious-ips/count-unblocked",
+        { withCredentials: true }
       );
-      const data = await res.json();
-      setUnblockedCount(data.count);
-      setHasSuspiciousIPs(data.count > 0);
+
+      const count = res.data?.count || 0;
+      setUnblockedCount(count);
+      setHasSuspiciousIPs(count > 0);
     } catch (err) {
       console.warn("Failed to fetch suspicious IP count:", err);
     }
   }
 
-  /* ===========================
-     🎨 تم روشن/تاریک
-     =========================== */
+  /* --------------------------------------------------------
+     🎨 Sync Theme with DOM
+  ---------------------------------------------------------*/
   useEffect(() => {
-    const current = document.documentElement.getAttribute("data-theme") || "light";
+    const current =
+      document.documentElement.getAttribute("data-theme") || "light";
     setTheme(current);
 
     const observer = new MutationObserver(() => {
-      const newTheme = document.documentElement.getAttribute("data-theme");
+      const newTheme =
+        document.documentElement.getAttribute("data-theme") || "light";
       setTheme(newTheme);
     });
 
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
+
     return () => observer.disconnect();
   }, []);
 
@@ -131,7 +134,7 @@ export default function Sidebar() {
       {/* Header */}
       <div className="px-6 py-6 border-b border-[var(--border)] flex items-center gap-4">
         <img
-          src={theme === "dark" ? "/logo-dark.png" : "/logo-light.png"}
+          src={theme === "dark" ? "/logo-light.png" : "/logo-dark.png"}
           alt="IranConnect Logo"
           className="w-16 h-16 md:w-20 md:h-20 object-contain drop-shadow-lg transition-all duration-300"
         />
@@ -140,12 +143,9 @@ export default function Sidebar() {
         </div>
       </div>
 
-      {/* Navigation */}
       <nav className="flex-1 p-3 overflow-y-auto">
         {groupedNav.map((group) => (
           <div key={group.label} className="mb-3">
-            
-            {/* Parent Item */}
             <button
               onClick={() => toggleGroup(group.label)}
               className={`flex items-center justify-between w-full px-3 py-2 rounded-lg text-sm font-medium transition-all ${
@@ -154,21 +154,15 @@ export default function Sidebar() {
                   : "text-[var(--text)] hover:bg-turquoise/10 hover:text-turquoise"
               }`}
             >
-
               <span className="flex items-center gap-2">
                 <span>{group.icon}</span>
                 <span>{group.label}</span>
 
-                {/* 🔥 عدد کنار Security وقتی بسته است */}
+                {/* Red badge for suspicious IPs */}
                 {group.label === "Security" &&
                   openGroup !== "Security" &&
                   unblockedCount > 0 && (
-                    <span
-                      className="
-                        ml-2 text-[10px] bg-red-600 text-white
-                        px-2 py-0.5 rounded-full
-                      "
-                    >
+                    <span className="ml-2 text-[10px] bg-red-600 text-white px-2 py-0.5 rounded-full">
                       {unblockedCount}
                     </span>
                   )}
@@ -179,20 +173,17 @@ export default function Sidebar() {
               </span>
             </button>
 
-            {/* Child Items */}
             {openGroup === group.label && (
               <div className="ml-6 mt-2 border-l border-[var(--border)] pl-2">
                 {group.items.map((item) => {
                   const active = pathname.startsWith(item.href);
                   const isSuspiciousGroup = item.href === "/admin/suspicious-ips";
 
-                  // اگر آیتمی چایلد دارد (مثل Suspicious IPs)
                   if (item.children) {
                     const isOpen = openSubGroup === item.label;
 
                     return (
                       <div key={item.href} className="mb-1">
-
                         <div
                           className={`flex items-center justify-between px-2 py-1.5 rounded-md text-sm font-medium transition-all cursor-pointer ${
                             isOpen || active
@@ -200,37 +191,30 @@ export default function Sidebar() {
                               : "text-[var(--text)] hover:bg-turquoise/10 hover:text-turquoise"
                           }`}
                         >
-                          {/* ✔️ نام و لینک صفحه اصلی Suspicious IPs */}
                           <Link
                             href={item.href}
                             className="flex items-center gap-2 flex-1"
                           >
                             <span>{item.label}</span>
 
-                            {/* 🔥 عدد کنار Suspicious IPs وقتی Security باز است */}
                             {item.href === "/admin/suspicious-ips" &&
                               unblockedCount > 0 && (
-                                <span
-                                  className="
-                                    ml-2 text-[10px] bg-red-600 text-white
-                                    px-2 py-0.5 rounded-full
-                                  "
-                                >
+                                <span className="ml-2 text-[10px] bg-red-600 text-white px-2 py-0.5 rounded-full">
                                   {unblockedCount}
                                 </span>
                               )}
                           </Link>
 
-                          {/* ✔️ دکمه باز/بسته کردن زیرمنو */}
                           <button
-                            onClick={() => setOpenSubGroup(isOpen ? null : item.label)}
+                            onClick={() =>
+                              setOpenSubGroup(isOpen ? null : item.label)
+                            }
                             className="text-xs px-2 py-1"
                           >
                             {isOpen ? "▲" : "▼"}
                           </button>
                         </div>
 
-                        {/* زیرمنوها */}
                         {isOpen && (
                           <div className="ml-4 mt-1 border-l border-[var(--border)] pl-2">
                             {item.children.map((child) => {
@@ -255,7 +239,6 @@ export default function Sidebar() {
                     );
                   }
 
-                  // سایر آیتم‌ها
                   return (
                     <Link
                       key={item.href}
@@ -269,23 +252,15 @@ export default function Sidebar() {
                       <span className="flex items-center justify-between">
                         <span>{item.label}</span>
 
-                        {/* 🔥 عدد کنار Suspicious IPs وقتی Security بسته است */}
-                        {isSuspiciousGroup &&
-                          unblockedCount > 0 && (
-                            <span
-                              className="
-                                ml-2 text-[10px] bg-red-600 text-white
-                                px-2 py-0.5 rounded-full
-                              "
-                            >
-                              {unblockedCount}
-                            </span>
-                          )}
+                        {isSuspiciousGroup && unblockedCount > 0 && (
+                          <span className="ml-2 text-[10px] bg-red-600 text-white px-2 py-0.5 rounded-full">
+                            {unblockedCount}
+                          </span>
+                        )}
                       </span>
                     </Link>
                   );
                 })}
-
               </div>
             )}
           </div>
