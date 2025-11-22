@@ -37,7 +37,7 @@ apiClient.interceptors.request.use(
     config.withCredentials = true;
 
     // ✅ تغییر جدید: فقط در صورت نبود کوکی HttpOnly، از localStorage استفاده کن
-    const hasCookie = typeof document !== "undefined" && document.cookie.includes("access_token=");
+    const hasCookie = typeof document !== "undefined";
     if (!hasCookie) {
       const token = localStorage.getItem("iran_token");
       if (token) {
