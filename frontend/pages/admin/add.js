@@ -260,7 +260,7 @@ export default function AddBusinessPage() {
       }
 
       // ✅ تغییر امنیتی اصلی
-      await apiClient.post("/api/admin/businesses", data, {
+      await apiClient.post("/admin/businesses", data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
