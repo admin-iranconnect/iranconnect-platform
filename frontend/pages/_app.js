@@ -1,11 +1,10 @@
-//frontend/pages/_app.js
+// frontend/pages/_app.js
 import '../styles/globals.css';
 import '../styles/admin.css';
 import '../styles/reactquill.css';
 import { useEffect, useState, useRef } from 'react';
 import CookieConsent from '../components/CookieConsent';
 import AutoLogoutModal from '../components/AutoLogoutModal';
-import axios from 'axios';
 import apiClient from '../utils/apiClient';
 import { useRouter } from 'next/router';
 
@@ -16,28 +15,40 @@ export default function App({ Component, pageProps }) {
   const timerRef = useRef(null);
   const router = useRouter();
 
+  /* 🚀 تشخیص ورود کاربر از طریق کوکی HttpOnly */
+  async function checkLoginByCookie() {
+    try {
+      const res = await apiClient.get('/auth/me'); // بدون /api ← چون apiClient از BASE_URL استفاده می‌کند
+      if (res.data?.ok) {
+        setIsLoggedIn(true);
+      } else {
+        setIsLoggedIn(false);
+      }
+    } catch {
+      setIsLoggedIn(false);
+    }
+  }
+
+  useEffect(() => {
+    checkLoginByCookie();
+  }, []);
+
   /* 🚀 Ping به سرور در هر تغییر مسیر */
   useEffect(() => {
     if (!isLoggedIn) return;
 
-    const handleRouteChange = async (url) => {
+    const handleRouteChange = async () => {
       try {
-        // درخواست سبک برای بررسی اعتبار توکن
-        await apiClient.get('/api/auth/ping');
-      } catch (err) {
-        // اگر سشن منقضی یا از جای دیگه لاگین شده باشه،
-        // interceptor مرکزی خودش logout می‌کنه
-        console.warn('Ping failed on route change:', err?.message);
+        await apiClient.get('/auth/ping');
+      } catch {
+        console.warn("Ping failed on route change");
       }
     };
 
     router.events.on('routeChangeStart', handleRouteChange);
-
-    return () => {
-      router.events.off('routeChangeStart', handleRouteChange);
-    };
+    return () => router.events.off('routeChangeStart', handleRouteChange);
   }, [isLoggedIn]);
-  
+
   /* 🎨 Load theme */
   useEffect(() => {
     const saved = localStorage.getItem('iran_theme') || 'light';
@@ -45,26 +56,7 @@ export default function App({ Component, pageProps }) {
     document.documentElement.setAttribute('data-theme', saved);
   }, []);
 
-  /* 🔐 Detect login via iran_token (مثل Header.jsx) */
-  useEffect(() => {
-    const checkLogin = () => {
-      const valid =
-        token &&
-        token !== 'undefined' &&
-        token !== 'null' &&
-        token.trim() !== '';
-
-      setIsLoggedIn(!!valid);
-    };
-
-    // بررسی اولیه و در صورت تغییر localStorage
-    checkLogin();
-    window.addEventListener('storage', checkLogin);
-
-    return () => window.removeEventListener('storage', checkLogin);
-  }, []);
-
-  /* 🕒 Auto-logout فقط وقتی کاربر لاگین کرده */
+  /* 🕒 Auto-logout */
   useEffect(() => {
     if (!isLoggedIn) {
       clearTimeout(timerRef.current);
@@ -74,57 +66,42 @@ export default function App({ Component, pageProps }) {
 
     const resetTimer = () => {
       clearTimeout(timerRef.current);
-      timerRef.current = setTimeout(() => setInactive(true), 2 * 60 * 1000); // 3 دقیقه
+      timerRef.current = setTimeout(() => setInactive(true), 2 * 60 * 1000);
     };
 
     const events = ['mousemove', 'mousedown', 'keypress', 'touchstart'];
-    events.forEach((e) => window.addEventListener(e, resetTimer));
+    events.forEach(e => window.addEventListener(e, resetTimer));
     resetTimer();
 
     return () => {
       clearTimeout(timerRef.current);
-      events.forEach((e) => window.removeEventListener(e, resetTimer));
+      events.forEach(e => window.removeEventListener(e, resetTimer));
     };
   }, [isLoggedIn]);
 
-  /* 🔄 Ping session validity to detect logout from another device */
+  /* 🔄 Ping session validity */
   useEffect(() => {
     if (!isLoggedIn) return;
 
     const interval = setInterval(async () => {
       try {
-        await apiClient.get('/api/auth/ping');
-        // اگر موفق بود → ساکت بمان
-      } catch (err) {
-        console.warn('Session check failed — likely logged in elsewhere.');
-        // apiClient interceptor خودش logout و redirect را انجام می‌دهد
-      }
-    }, 60000); // هر ۶۰ ثانیه (برای تست می‌تونی 10000 بزاری)
+        await apiClient.get('/auth/ping');
+      } catch {}
+    }, 60000);
 
     return () => clearInterval(interval);
   }, [isLoggedIn]);
-  
-  
+
   /* 🚪 خروج امن */
   async function handleLogout() {
     try {
-      clearTimeout(timerRef.current);
-      setInactive(false);
-      if (token) {
-        await axios.post(
-          `${process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:5000'}/api/auth/logout`,
-          {},
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-      }
-    } catch (err) {
-      console.warn('Logout failed:', err.message);
-    }
-    localStorage.removeItem('iran_token');
-    localStorage.removeItem('iran_role');
-    sessionStorage.clear();
+      await apiClient.post('/auth/logout'); // تمام از طریق کوکی
+    } catch {}
+
+    // پاک‌سازی داخلی
     setIsLoggedIn(false);
-    window.location.href = '/auth/login';
+    setInactive(false);
+    router.push('/auth/login');
   }
 
   /* 🙋 ادامه حضور */
@@ -144,7 +121,6 @@ export default function App({ Component, pageProps }) {
     <>
       <CookieConsent />
 
-      {/* 🕒 فقط وقتی لاگین کرده */}
       {isLoggedIn && (
         <AutoLogoutModal
           visible={inactive}
