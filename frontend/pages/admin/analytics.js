@@ -32,7 +32,7 @@ export default function AnalyticsPage() {
     // 📊 دریافت آمار با apiClient (توکن خودکار)
     async function fetchStats() {
       try {
-        const res = await apiClient.get(`/api/admin/stats`);
+        const res = await apiClient.get(`/admin/stats`);
         setStats(res.data);
       } catch (err) {
         console.error("Analytics error:", err);
