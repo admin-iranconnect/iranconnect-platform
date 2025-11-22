@@ -108,7 +108,7 @@ export default function NewBusinessRequest() {
       fd.append("files", ownershipDoc);
       fd.append("files", buildingImage);
 
-      const res = await axios.post(`${API_BASE}/api/requests`, fd, {
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE}/api/requests`, fd, {
         headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" },
       });
 
