@@ -309,7 +309,13 @@ export async function verify(req, res) {
     );
 
     const opts = getCookieOptions(req);
-    res.cookie("access_token", token, { ...opts, maxAge: 7 * 24 * 60 * 60 * 1000 }); // 7 روز
+    res.cookie("access_token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      domain: ".iranconnect.org", // همین باعث میشه توی frontend هم دیده بشه
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 روز
+    });
 
     
     res.json({
@@ -543,7 +549,13 @@ export async function login(req, res) {
     );
 
     const opts = getCookieOptions(req);
-    res.cookie("access_token", token, { ...opts, maxAge: 7 * 24 * 60 * 60 * 1000 }); // 7 روز
+    res.cookie("access_token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      domain: ".iranconnect.org", // همین باعث میشه توی frontend هم دیده بشه
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 روز
+    });
 
     // ✅ ثبت لاگ ورود موفق و ریست شمارنده‌ها
     await handleSuccessfulLogin(user, req);
