@@ -32,7 +32,7 @@ export default function AdminPage() {
     setLoading(true);
     setError("");
     try {
-      const res = await apiClient.get(`/api/admin/businesses`);
+      const res = await apiClient.get(`/admin/businesses`);
       setList(res.data || []);
     } catch (err) {
       console.error("❌ Error fetching businesses:", err);
