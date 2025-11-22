@@ -33,7 +33,7 @@ export default function AdminSecurityLogs() {
     setLoading(true);
     setError("");
     try {
-      const res = await apiClient.get(`/api/admin/security-logs`, {
+      const res = await apiClient.get(`/admin/security-logs`, {
         params: { status: filter || undefined },
       });
       setLogs(res.data || []);
