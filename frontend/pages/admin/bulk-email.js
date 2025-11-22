@@ -72,11 +72,11 @@ export default function BulkEmailPage() {
         payload.append("body", body);
         attachments.forEach((file) => payload.append("attachments", file));
 
-        await apiClient.post(`/api/admin/bulk-email/send`, payload, {
+        await apiClient.post(`/admin/bulk-email/send`, payload, {
           headers: { "Content-Type": "multipart/form-data" },
         });
       } else {
-        await apiClient.post(`/api/admin/bulk-email/send`, {
+        await apiClient.post(`/admin/bulk-email/send`, {
           sender_email: senderEmail,
           subject,
           body,
@@ -111,7 +111,7 @@ export default function BulkEmailPage() {
     const params = new URLSearchParams();
     params.set("filter", filter);
     if (value) params.set("value", value.trim());
-    return `${API_BASE}/api/admin/bulk-email/report/filter?${params.toString()}`;
+    return `${process.env.NEXT_PUBLIC_API_BASE}/api/admin/bulk-email/report/filter?${params.toString()}`;
   }
 
   // 🧮 اعتبارسنجی تاریخ DD/MM/YYYY
@@ -393,7 +393,7 @@ export default function BulkEmailPage() {
                       <td>
                         <div className="flex gap-2">
                           <a
-                            href={`${API_BASE}/api/admin/bulk-email/report/${log.id}/pdf`}
+                            href={`${process.env.NEXT_PUBLIC_API_BASE}/api/admin/bulk-email/report/${log.id}/pdf`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="admin-btn admin-btn-secondary"
