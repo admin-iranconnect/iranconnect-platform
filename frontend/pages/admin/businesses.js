@@ -30,7 +30,7 @@ export default function BusinessesPage() {
   async function fetchBusinesses(search = "") {
     setLoading(true);
     try {
-      const res = await apiClient.get(`/api/admin/businesses`, {
+      const res = await apiClient.get(`/admin/businesses`, {
         params: { q: search },
       });
       setList(res.data || []);
