@@ -41,7 +41,7 @@ export default function NewBusiness() {
     setError("");
 
     try {
-      await apiClient.post(`/api/admin/businesses`, form);
+      await apiClient.post(`/admin/businesses`, form);
       alert("✅ Business added successfully!");
       router.push("/admin");
     } catch (err) {
