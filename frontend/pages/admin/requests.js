@@ -46,7 +46,7 @@ export default function AdminBusinessRequestsPage() {
         type: typeFilter,
         q: searchTerm.trim() || undefined,
       };
-      const res = await apiClient.get(`/api/admin/requests`, { params });
+      const res = await apiClient.get(`/admin/requests`, { params });
       setRequests(res.data.rows || []);
       setTotal(res.data.total || 0);
       setPage(res.data.page || 1);
@@ -62,7 +62,7 @@ export default function AdminBusinessRequestsPage() {
   // 📤 خروجی XLSX
   async function handleExportXLSX() {
     try {
-      const res = await apiClient.get(`/api/admin/requests/export/xlsx`, {
+      const res = await apiClient.get(`/admin/requests/export/xlsx`, {
         responseType: "blob",
       });
       const url = window.URL.createObjectURL(res.data);
@@ -79,7 +79,7 @@ export default function AdminBusinessRequestsPage() {
   // 🧾 خروجی PDF
   async function handleExportPDF() {
     try {
-      const res = await apiClient.get(`/api/admin/requests/export/pdf`, {
+      const res = await apiClient.get(`/admin/requests/export/pdf`, {
         responseType: "blob",
       });
       const url = window.URL.createObjectURL(res.data);
