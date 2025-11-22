@@ -57,7 +57,7 @@ export default function BusinessesPage() {
     if (!confirmDelete) return;
 
     try {
-      await apiClient.delete(`/api/admin/businesses/${id}`);
+      await apiClient.delete(`/admin/businesses/${id}`);
       setList((prev) => prev.filter((b) => b.id !== id));
       alert("✅ Business deleted successfully.");
     } catch (e) {
