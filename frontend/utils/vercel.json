@@ -1,8 +1,0 @@
-{
-  "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "https://api.iranconnect.org/api/$1"
-    }
-  ]
-}
