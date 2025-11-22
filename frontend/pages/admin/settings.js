@@ -56,7 +56,7 @@ export default function SettingsPage() {
 
     try {
       setLoading(true);
-      await apiClient.post(`/api/admin/change-password`, {
+      await apiClient.post(`/admin/change-password`, {
         currentPassword: current,
         newPassword: newPass,
       });
