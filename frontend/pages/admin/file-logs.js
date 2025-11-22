@@ -23,7 +23,7 @@ export default function AdminFileLogsPage() {
       const params = {};
       if (status) params.status = status;
       if (source) params.source = source;
-      const res = await apiClient.get("/api/admin/files/logs", { params });
+      const res = await apiClient.get("/admin/files/logs", { params });
       setLogs(res.data || []);
     } catch (err) {
       console.error("❌ Fetch logs error:", err);
