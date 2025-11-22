@@ -22,16 +22,14 @@ const BCRYPT_ROUNDS = parseInt(process.env.BCRYPT_ROUNDS || "12", 10);
 
 dotenv.config();
 
-function getCookieOptions(req) {
-  const isProd = process.env.NODE_ENV === "production";
-
-  res.cookie("access_token", token, {
+function getCookieOptions() {
+  return {
     httpOnly: true,
     secure: true,
     sameSite: "strict",
-    domain: ".iranconnect.org",   // 🔥 این خط را اضافه کن
+    domain: ".iranconnect.org",
     maxAge: 7 * 24 * 60 * 60 * 1000,
-  });
+  };
 }
 
 /* ================================
