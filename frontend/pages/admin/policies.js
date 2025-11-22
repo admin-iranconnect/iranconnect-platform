@@ -56,7 +56,7 @@ export default function PoliciesAdmin() {
   // 📄 دریافت فهرست پالیسی‌ها
   async function fetchPolicies() {
     try {
-      const res = await apiClient.get(`/api/policies/admin`);
+      const res = await apiClient.get(`/policies/admin`);
       setPolicies(res.data || []);
     } catch (err) {
       console.error("❌ Error fetching policies:", err);
@@ -70,9 +70,9 @@ export default function PoliciesAdmin() {
     setError("");
     try {
       if (editingId) {
-        await apiClient.put(`/api/policies/admin/${editingId}`, { type, lang, content });
+        await apiClient.put(`/policies/admin/${editingId}`, { type, lang, content });
       } else {
-        await apiClient.post(`/api/policies/admin`, { type, lang, content });
+        await apiClient.post(`/policies/admin`, { type, lang, content });
       }
       alert("✅ Policy saved successfully.");
       resetForm();
@@ -88,7 +88,7 @@ export default function PoliciesAdmin() {
   async function deletePolicy(id) {
     if (!confirm("Delete this policy?")) return;
     try {
-      await apiClient.delete(`/api/policies/admin/${id}`);
+      await apiClient.delete(`/policies/admin/${id}`);
       fetchPolicies();
     } catch (err) {
       alert(err.response?.data?.error || "Error deleting policy.");
@@ -117,7 +117,7 @@ export default function PoliciesAdmin() {
     try {
       setHistoryLoading(true);
       setHistoryKey({ type: t, lang: l });
-      const res = await apiClient.get(`/api/policies/admin/history/${t}/${l}`);
+      const res = await apiClient.get(`/policies/admin/history/${t}/${l}`);
       setHistoryList(res.data || []);
       setHistoryOpen(true);
     } catch (err) {
@@ -129,7 +129,7 @@ export default function PoliciesAdmin() {
 
   async function restoreVersion(id) {
     try {
-      await apiClient.post(`/api/policies/admin/restore/${id}`);
+      await apiClient.post(`/policies/admin/restore/${id}`);
       await fetchPolicies();
       await openHistory(historyKey.type, historyKey.lang);
       alert("✅ Restored as new version successfully.");
