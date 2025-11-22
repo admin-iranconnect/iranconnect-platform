@@ -49,7 +49,7 @@ export default function ContactRequestsPage() {
       if (filterStatus) params.status = filterStatus;
       if (filterDate) params.date = filterDate;
 
-      const res = await apiClient.get(`/api/admin/contact-requests`, { params });
+      const res = await apiClient.get(`/admin/contact-requests`, { params });
       setRequests(res.data || []);
       setCurrentPage(1);
     } catch (err) {
@@ -148,7 +148,7 @@ export default function ContactRequestsPage() {
                     const token = localStorage.getItem("iran_token");
                     const url = `${
                         process.env.NEXT_PUBLIC_API_BASE || "http://localhost:5000"
-                    }/api/admin/contact-requests/export/xlsx?token=${token}`;
+                    }/admin/contact-requests/export/xlsx?token=${token}`;
                     window.open(url, "_blank");
                     }}
                     className="admin-btn admin-btn-primary px-4 py-2 text-sm font-medium"
@@ -162,7 +162,7 @@ export default function ContactRequestsPage() {
                     const token = localStorage.getItem("iran_token");
                     const url = `${
                         process.env.NEXT_PUBLIC_API_BASE || "http://localhost:5000"
-                    }/api/admin/contact-requests/export/pdf?token=${token}`;
+                    }/admin/contact-requests/export/pdf?token=${token}`;
                     window.open(url, "_blank");
                     }}
                     className="admin-btn admin-btn-primary px-4 py-2 text-sm font-medium"
