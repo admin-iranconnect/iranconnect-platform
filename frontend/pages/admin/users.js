@@ -45,7 +45,7 @@ export default function UsersPage() {
       if (filterRole) params.role = filterRole;
       if (filterVerified) params.verified = filterVerified;
 
-      const res = await apiClient.get(`/api/admin/users`, { params });
+      const res = await apiClient.get(`/admin/users`, { params });
       setUsers(res.data || []);
     } catch (err) {
       console.error("❌ Fetch users error:", err);
@@ -119,7 +119,7 @@ export default function UsersPage() {
                   const token = localStorage.getItem("iran_token");
                   const url = `${
                     process.env.NEXT_PUBLIC_API_BASE || "http://localhost:5000"
-                  }/api/admin/users/export/xlsx?token=${token}`;
+                  }/admin/users/export/xlsx?token=${token}`;
                   window.open(url, "_blank");
                 }}
                 className="admin-btn admin-btn-primary px-4 py-2 text-sm font-medium"
