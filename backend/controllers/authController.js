@@ -24,11 +24,12 @@ dotenv.config();
 
 function getCookieOptions(req) {
   const isProd = process.env.NODE_ENV === "production";
+
   return {
     httpOnly: true,
-    secure: false,      // ⚙️ فقط چون در لوکال HTTPS نداریم
-    sameSite: "None",   // ✅ چون پورت‌ها جدا هستن
-    domain: undefined,
+    secure: isProd,          // 🔥 در پروداکشن باید انکریپت باشد
+    sameSite: isProd ? "None" : "Lax",
+    domain: isProd ? ".iranconnect.org" : undefined, // 🔥 اجازه بدهد بین دامنه‌ها معتبر باشد
     path: "/",
   };
 }
