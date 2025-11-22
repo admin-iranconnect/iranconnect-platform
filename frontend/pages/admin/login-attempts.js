@@ -27,7 +27,7 @@ export default function AdminLoginAttemptsPage() {
       if (blockedOnly) params.blocked = "true";
       if (email) params.email = email;
 
-      const res = await apiClient.get("/api/admin/login-attempts/all", { params });
+      const res = await apiClient.get("/admin/login-attempts/all", { params });
       setLogs(res.data?.data || []);
     } catch (err) {
       console.error("❌ Fetch login attempts error:", err);
@@ -40,7 +40,7 @@ export default function AdminLoginAttemptsPage() {
   function handleExport(type) {
     const token = localStorage.getItem("iran_token");
     const base = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:5000";
-    window.open(`${base}/api/admin/login-attempts/export/${type}?token=${token}`, "_blank");
+    window.open(`${process.env.NEXT_PUBLIC_API_BASE}/api/admin/login-attempts/export/${type}?token=${token}`, "_blank");
   }
 
   return (
