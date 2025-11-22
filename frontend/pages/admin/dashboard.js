@@ -19,7 +19,7 @@ export default function AdminDashboard({ toggleTheme, currentTheme }) {
   async function fetchBusinesses() {
     setLoadingBiz(true);
     try {
-      const r = await apiClient.get(`/api/admin/businesses`);
+      const r = await apiClient.get(`/admin/businesses`);
       setBusinesses(r.data || []);
     } catch (e) {
       console.error("❌ Error fetching businesses:", e);
@@ -32,7 +32,7 @@ export default function AdminDashboard({ toggleTheme, currentTheme }) {
   async function fetchUsers() {
     setLoadingUsers(true);
     try {
-      const r = await apiClient.get(`/api/admin/users`);
+      const r = await apiClient.get(`/admin/users`);
       setUsers(r.data || []);
     } catch (e) {
       console.error("❌ Error fetching users:", e);
